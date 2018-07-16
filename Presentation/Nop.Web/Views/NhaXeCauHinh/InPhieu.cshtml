@@ -1,0 +1,15 @@
+﻿@model NhaXeCauHinhModel
+@using Nop.Web.Models.NhaXes
+@{
+    Layout = "~/Views/Shared/_Print.cshtml";
+    //page title
+    ViewBag.Title = "In phiếu";
+}
+<script>
+    $(document).ready(function () {
+        window.print();
+    });
+
+
+</script>
+@Html.Raw(Model.GiaTri)

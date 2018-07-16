@@ -1,0 +1,178 @@
+﻿@model DoanhThuNhanVienLuotModel
+@using Nop.Web.Models.NhaXeBaoCao
+
+<table class="BangGiaVe">
+    @for (int i = 0; i < Model.SoHanhTrinh + 1; i++)
+    {
+        var Tong = 0;
+        var tongkhach = 0;
+        decimal tongdoanhthu = 0;
+        <tr style="text-align:center">
+            @for (int j = 0; j < Model.SoNhan + 2; j++)
+            {
+                  
+                var withcol = "50px";
+                if(j==0)
+                {
+                    withcol = "250px";
+                }
+                <td style="width:@withcol">
+                    @if (i == 0 && j > 0 && j<Model.SoNhan+1)
+                    {
+                        <span> @Model.DoanhThuHangTrinh[0, j].Nhan</span>
+
+                    }
+                    @if (j == 0 && i > 0)
+                    {
+
+                        <table width="100%" id="BangChild">
+                            <tr>
+                                <td rowspan="4">
+                                    <div style="float:left"> @Model.DoanhThuHangTrinh[i, 0].TenHanhTrinh</div>
+                                </td>
+                                <td style="width:55px">
+                                    Số chuyến
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Số khách
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Số khách TB
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Doanh thu
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    }
+                    @if (i > 0 && j > 0 && j < Model.SoNhan + 1)
+                    {
+                        Tong = Tong + Model.DoanhThuHangTrinh[i, j].SoChuyen;
+                        tongkhach = tongkhach + Model.DoanhThuHangTrinh[i, j].SoKhach;
+                        tongdoanhthu = tongdoanhthu + Model.DoanhThuHangTrinh[i, j].DoanhThu;
+                        <table width="100%" id="BangChild">
+                            <tr>
+                                
+                                <td>
+                                    @if (Model.DoanhThuHangTrinh[i, j].SoChuyen > 0)
+                                    {
+
+                                    <span> @Model.DoanhThuHangTrinh[i, j].SoChuyen</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @if (Model.DoanhThuHangTrinh[i, j].SoKhach > 0)
+                                    {
+
+                                        <span> @Model.DoanhThuHangTrinh[i, j].SoKhach</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                   
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @if (Model.DoanhThuHangTrinh[i, j].DoanhThu > 0)
+                                    {
+
+                                        <span> @Model.DoanhThuHangTrinh[i, j].DoanhThu.ToString("###,###")</span>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                       
+                     
+
+                    }
+                    @if (j == Model.SoNhan + 1)
+                    {
+                        if(i==0)
+                        {
+                            <span>Tổng</span>
+                        }
+                        else
+                        {
+                            <table width="100%" id="BangChild">
+                                <tr>
+
+                                    <td>
+                                        @if (Tong > 0)
+                                        {
+
+                                            <span> @Tong</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @if (tongkhach > 0)
+                                        {
+
+                                            <span> @tongkhach</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @if (tongdoanhthu > 0)
+                                        {
+
+                                            <span> @tongdoanhthu</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+
+
+
+
+
+                    }
+                </td>
+            }
+
+        </tr>
+    }
+</table>
+
+<style>
+     .BangGiaVe {
+                border-collapse: collapse;                
+               
+            }
+       .BangGiaVe, .BangGiaVe tr, .BangGiaVe tr td {
+            border: 1px solid #928d8d;
+        }
+       .BangGiaVe tr
+       {
+           height:30px;
+       }
+        #BangChild {
+                border-collapse: collapse;                
+                   border: hidden;
+            }
+        #BangChild tr, #BangChild tr td {
+            border: 1px solid #928d8d;
+        }
+       #BangChild tr
+       {
+           height:30px;
+       }
+</style>

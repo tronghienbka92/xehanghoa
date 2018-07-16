@@ -1,0 +1,226 @@
+﻿@model XeXuatBenItemModel
+@using Nop.Web.Models.NhaXes
+@using Nop.Core.Domain.Chonves
+@using Nop.Core.Domain.NhaXes;
+
+    <table style="width:100%" cellpadding="5" cellspacing="5">
+        <tr>
+            <td style="width:50%">
+                Giờ mở lệnh: <input id="cbbGioMoLenh" style="width:220px" value="@Model.GioMoPhoi" />
+            </td>
+            <td>
+                Giờ xuất bến(HH:mm): <input id="txtThoiGianDi" value="@Model.NgayDi.ToString("HH:mm")" />
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                Số xe: <input id="cbbBienSoInput" style="width:220px" value="@Model.DBSoXe" />
+            </td>
+            <td>
+                Số phiếu XN: @Html.TextBoxFor(m => m.SoPhieuXN)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Số lệnh VD: @Html.TextBoxFor(m=>m.SoLenhVD)
+            </td>
+            <td>
+                Số khách:  @Html.TextBoxFor(m => m.SoKhachXB)
+            </td>
+        </tr>
+       
+        <tr>
+            <td>
+                Lái xe: <input id="cbbLaiXeInput" style="width:220px" value="@Model.DBLaiXe" />
+            </td>        
+            <td>
+                Phụ xe: <input id="cbbPhuXeInput" style="width:220px" value="@Model.DBPhuXe" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                @Html.TextAreaFor(model => model.GhiChu, new { @style = "width:90%" })                
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:center" colspan="2">
+                <input type="button" value="Đồng ý" class="k-button" onclick="LuuThongTin();" />&nbsp;&nbsp;
+                @if (Model.Id > 0)
+                {
+                    <input type="button" value="Hủy thiết đặt" class="k-button" onclick="HuyChuyenDi(@Model.Id , true);" id="btnHuyThietDat" />
+                }
+                
+            </td>
+        </tr>
+    </table>
+
+
+<script>
+    //tao thong tin xe
+    var giomophoidatasoures = [
+           @for (int i = 0; i < Model.GioMoPhois.Count; i++)
+    {
+        var _item = Model.GioMoPhois[i];
+        <text>
+    {
+        Id: @(_item.Id),
+        GioMoPhoi: "@(Html.Raw(HttpUtility.JavaScriptStringEncode(_item.Ten)))"
+    }
+    </text>
+        if (i != Model.GioMoPhois.Count - 1)
+        {
+            <text>,</text>
+        }
+    }
+    ];
+
+    $(document).ready(function () {
+        ThongTinGioMoPhoi();
+        ThongTinBienSo();
+        ThongTinPhuXe();
+        ThongTinLaiXe();
+    });
+
+    function ThongTinGioMoPhoi() {
+        $("#cbbGioMoLenh").kendoComboBox({
+            placeholder: "Giờ mở lệnh",
+            dataTextField: "GioMoPhoi",
+            dataValueField: "Id",
+            filter: "contains",
+            autoBind: false,
+            minLength: 1,
+            dataSource: {
+                data: giomophoidatasoures
+            },
+            change: function (e) {
+            }
+        });
+
+    }
+    function ThongTinPhuXe()
+    {
+        $("#cbbPhuXeInput").kendoComboBox({
+            placeholder: "Chọn phụ xe",
+            dataTextField: "TenLaiXe",
+            dataValueField: "Id",
+            filter: "contains",
+            autoBind: false,
+            minLength: 1,
+            dataSource: {
+                data: phuxedatasoures
+            },
+            change: function (e) {
+            }
+        });
+        if (parseInt("@Model.PhuXeId") > 0)
+            $("#cbbPhuXeInput").data("kendoComboBox").value(parseInt("@Model.PhuXeId"));
+        else
+            $("#cbbPhuXeInput").data("kendoComboBox").select(-1);
+    }
+    function ThongTinLaiXe() {
+        $("#cbbLaiXeInput").kendoComboBox({
+            placeholder: "Chọn lái xe",
+            dataTextField: "TenLaiXe",
+            dataValueField: "Id",
+            filter: "contains",
+            autoBind: false,
+            minLength: 1,
+            dataSource: {
+                data: laixedatasoures
+            },
+            change: function (e) {
+            }
+        });        
+        if (parseInt("@Model.LaiXeId") > 0)
+            $("#cbbLaiXeInput").data("kendoComboBox").value(parseInt("@Model.LaiXeId"));
+        else
+            $("#cbbLaiXeInput").data("kendoComboBox").select(-1);
+    }
+    function ThongTinBienSo() {
+        $("#cbbBienSoInput").kendoComboBox({
+            placeholder: "Chọn số xe",
+            dataTextField: "BienSo",
+            dataValueField: "Id",
+            filter: "contains",
+            autoBind: false,
+            minLength: 1,
+            dataSource: {
+                data: xevanchuyendatasoures
+            },
+            change: function (e) {
+            }
+        });
+       
+        if (parseInt("@Model.XeVanChuyenId") > 0)
+        {
+            $("#cbbBienSoInput").data("kendoComboBox").value(parseInt("@Model.XeVanChuyenId"));
+        }
+        else
+            $("#cbbBienSoInput").data("kendoComboBox").select(-1);
+    }
+    function LuuThongTin() {
+        var _laixeid = $('#cbbLaiXeInput').data("kendoComboBox").value();
+        var _phuxexeid = $('#cbbPhuXeInput').data("kendoComboBox").value();
+        var _biensoxeid = $('#cbbBienSoInput').data("kendoComboBox").value();
+        if (_biensoxeid == "") {
+            alert("Bạn chưa chọn biển số xe");
+            $("#cbbLaiXeInput").data("kendoComboBox").input.focus();
+            return;
+        }
+        if (_laixeid == "") {
+            alert("Bạn chưa chọn lái xe");
+            $("#cbbBienSoInput").data("kendoComboBox").input.focus();
+            return;
+        }
+
+
+        var _thoigiandi ="@Model.NgayDi.ToString("yyyy-MM-dd")"+" "+ $('#txtThoiGianDi').val()+":00";
+        var _giomophoi=$('#cbbGioMoLenh').data("kendoComboBox").text();
+        var _data={
+            "Id":"@Model.Id",
+            "NguonVeId":"@Model.NguonVeId",
+            "HanhTrinhId":"@Model.HanhTrinhId",
+            "NgayDi":_thoigiandi,
+            "LaiXeId": _laixeid,
+            "PhuXeId": _phuxexeid,
+            "XeVanChuyenId": _biensoxeid,
+            "GioMoPhoi": _giomophoi,
+            "SoPhieuXN": $("#@Html.FieldIdFor(m=>m.SoPhieuXN)").val(),
+            "SoLenhVD": $("#@Html.FieldIdFor(m=>m.SoLenhVD)").val(),
+            "SoKhachXB": $("#@Html.FieldIdFor(m=>m.SoKhachXB)").val(),
+            "GhiChu": $("#@Html.FieldIdFor(m=>m.GhiChu)").val(),
+        };
+        $.ajax({
+            cache: false,
+            type: "POST",
+            data: _data,
+            dataType: 'json',
+            url: "@(Url.Action("CapNhatDieuChuyen", "HangHoa"))",
+            success: function (data) {
+                if (data=="OK") {
+                    //hien thi ket qua
+                    CloseWindowThietDat();
+                }
+                else {
+                    alert("Có lỗi");
+                }
+
+            },
+        });
+    }
+
+
+
+</script>
+<style>
+    .lnkchuyendicss {
+        font-weight: bold;
+        color: #3b94d4;
+    }
+
+    .bghanhtrinh {
+        background-color: #f8f4d7;
+        height: 30px;
+    }
+</style>

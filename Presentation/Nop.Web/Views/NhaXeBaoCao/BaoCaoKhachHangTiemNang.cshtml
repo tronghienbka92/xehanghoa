@@ -1,0 +1,218 @@
+﻿@model BaoCaoNhaXeModel
+@using Nop.Web.Models.NhaXes
+@using Nop.Core.Domain.NhaXes
+@using Nop.Core.Infrastructure
+@{
+    ViewBag.Title = "Báo cáo khách hàng tiềm năng";
+    Layout = "~/Views/Shared/_NhaXeLayout.cshtml";
+}
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Content/chonve/nxmenu/baocaodoanhthu.png")" alt="" />
+        @ViewBag.Title
+    </div>
+</div>
+<table style="width:100%">
+    <tr>
+        <td align="center" width="25%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Báo cáo theo:
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.Loai1Id, Model.ListLoai1)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center" width="15%">
+            <table class="adminContent" id="tabVanPhong">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Văn phòng:
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.VanPhongId, Model.VanPhongs)
+                    </td>
+                </tr>
+            </table>
+            <table class="adminContent" id="tabKhuVuc">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Khu vực:
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.KhuVucId, Model.KhuVucs)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center" width="25%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Người gửi/nhận:
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.Loai2Id, Model.ListLoai2)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center" width="15%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Sắp xếp:
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.Loai3Id, Model.ListLoai3)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td align="center" id="tabThang">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Từ ngày:
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.TuNgay)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center" id="tabNam">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Đến ngày:
+                    </td>
+                    <td class="adminData">
+                        @Html.EditorFor(model => model.DenNgay)
+                    </td>
+                </tr>
+            </table>
+        </td>                
+        <td style="text-align:left;">
+            <input type="button" id="btnSearch" class="k-button" value="@T("Admin.Common.Search")" />
+        </td>
+        <td>&nbsp;</td>
+        <td style="text-align:right">
+            <input type="button" id="btnExport" class="k-button" value="Xuất ra file Excel" />
+            @using (Html.BeginForm("_ExportBaoCao", "NhaXeBaoCao", FormMethod.Post, new { id = "export-xml-selected-form" }))
+            {
+                <input type="hidden" id="TuNgay" name="TuNgay" value="" />
+                <input type="hidden" id="DenNgay" name="DenNgay" value="" />
+                <input type="hidden" id="VanPhongId" name="VanPhongId" value="" />
+                <input type="hidden" id="LoaiBaoCaoId" name="LoaiBaoCaoId" value="@Model.LoaiBaoCaoId" />
+                <input type="hidden" id="Loai1Id" name="Loai1Id" value="" />
+                <input type="hidden" id="Loai2Id" name="Loai2Id" value="" />
+    <input type="hidden" id="Loai3Id" name="Loai3Id" value="" />
+                <input type="hidden" id="KhuVucId" name="KhuVucId" value="" />
+            }
+        </td>
+    </tr>
+</table>
+<div id="tabBaoCao"></div>
+<script>
+
+    function LoadBaoCao() {
+        $('#tabBaoCao').html("");
+        var datapost = dataSearchBaoCao();
+        showThrobber("Đang tổng hợp dữ liệu, xin vui lòng chờ");
+        $.ajax({
+            cache: false,
+            type: "POST",
+            data: datapost,
+            url: "@(Url.Action("_BaoCaoTongHop", "NhaXeBaoCao"))",
+            success: function (data) {
+
+                $('#tabBaoCao').html(data);
+                window.setTimeout(function () {
+                    $(".throbber").hide();
+                }, 1000);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#tabBaoCao').html("Có lỗi trong quá trình load dữ liệu");
+                window.setTimeout(function () {
+                    $(".throbber").hide();
+                }, 1000);
+            }
+        });
+    }
+    function ExportBaoCao() {
+        var TuNgay = $("#@Html.FieldIdFor(model => model.TuNgay)").val();
+        var DenNgay = $("#@Html.FieldIdFor(model => model.DenNgay)").val();
+        var VanPhongId = $("#@Html.FieldIdFor(model => model.VanPhongId)").val();
+        var LoaiBaoCaoId = $("#@Html.FieldIdFor(model => model.LoaiBaoCaoId)").val();
+        var Loai1Id = $("#@Html.FieldIdFor(model => model.Loai1Id)").val();
+        var Loai2Id = $("#@Html.FieldIdFor(model => model.Loai2Id)").val();
+        var Loai3Id = $("#@Html.FieldIdFor(model => model.Loai3Id)").val();
+        var KhuVucId = $("#@Html.FieldIdFor(model => model.KhuVucId)").val();
+
+        $('#export-xml-selected-form #TuNgay').val(TuNgay);
+        $('#export-xml-selected-form #DenNgay').val(DenNgay);
+        $('#export-xml-selected-form #VanPhongId').val(VanPhongId);
+        $('#export-xml-selected-form #LoaiBaoCaoId').val(LoaiBaoCaoId);
+        $('#export-xml-selected-form #Loai1Id').val(Loai1Id);
+        $('#export-xml-selected-form #Loai2Id').val(Loai2Id);
+        $('#export-xml-selected-form #Loai3Id').val(Loai3Id);
+        $('#export-xml-selected-form #KhuVucId').val(KhuVucId);
+        $('#export-xml-selected-form').submit();
+    }
+    function dataSearchBaoCao() {
+        var datapost = {
+            TuNgay: $("#@Html.FieldIdFor(model => model.TuNgay)").val(),
+            DenNgay: $("#@Html.FieldIdFor(model => model.DenNgay)").val(),
+            VanPhongId: $("#@Html.FieldIdFor(model => model.VanPhongId)").val(),
+            Loai1Id: $("#@Html.FieldIdFor(model => model.Loai1Id)").val(),
+            Loai2Id: $("#@Html.FieldIdFor(model => model.Loai2Id)").val(),
+            Loai3Id: $("#@Html.FieldIdFor(model => model.Loai3Id)").val(),
+            KhuVucId: $("#@Html.FieldIdFor(model => model.KhuVucId)").val(),
+            LoaiBaoCaoId: '@Model.LoaiBaoCaoId'
+        };
+        return datapost;
+    }
+    $(document).ready(function () {
+        $("#tabKhuVuc").hide();
+        $("#tabVanPhong").show();
+        $("#@Html.FieldIdFor(model=>model.Loai1Id)").change(function () {
+            switch ($(this[this.selectedIndex]).val()) {
+                case "@((int)BaoCaoKhachHangTiemNangTheoKV.THEO_KHU_VUC)":
+                    {
+                        $("#tabKhuVuc").show();
+                        $("#tabVanPhong").hide();
+                        break;
+                    }
+                case "@((int)BaoCaoKhachHangTiemNangTheoKV.THEO_VAN_PHONG)":
+                    {
+                        $("#tabKhuVuc").hide();
+                        $("#tabVanPhong").show();
+                        break;
+                    }
+            }
+        });
+        $('#btnSearch').click(function () {
+            //search
+            LoadBaoCao();
+            return false;
+        });
+        $('#btnExport').click(function () {
+            ExportBaoCao();
+            return false;
+        });
+        $("#@Html.FieldIdFor(model => model.VanPhongId)").change(function () {
+            $("#btnSearch").click();
+        });
+        $("#@Html.FieldIdFor(model => model.DenNgay)").change(function () {
+            $("#btnSearch").click();
+        });
+        LoadBaoCao();
+    });
+</script>

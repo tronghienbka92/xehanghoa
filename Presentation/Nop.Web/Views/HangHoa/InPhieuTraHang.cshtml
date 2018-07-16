@@ -1,0 +1,87 @@
+﻿@model InPhieuModel
+@using Nop.Web.Models.ChuyenPhatNhanh
+@{
+    Layout = "~/Views/Shared/_Print.cshtml";
+    //page title
+    ViewBag.Title = "In phiếu";
+    int i = 0;
+}
+<table style="height: 145px; width: 1000px; font-size: 13px; text-align: left;">
+    <tbody>
+        <tr>
+            <td style="width: 150px; vertical-align: top; text-align: center;"><img src="/Content/chonve/nhaxe/logoha.png" alt="" height="90" /></td>
+            <td style="vertical-align: top;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center; font-size: 23px; font-weight: bold;">PHIẾU TRẢ H&Agrave;NG</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-style: italic;">Ng&agrave;y @Model.NgayTraHang.Day th&aacute;ng @Model.NgayTraHang.Month năm @Model.NgayTraHang.Year</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="vertical-align: top;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;"><strong>Số:</strong>&nbsp;@Model.SoPhieu</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>VP:</strong>@Model.TenVanPhongNhan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <table style="width: 100%; border-collapse: collapse; text-align: center;" border="1">
+                    <thead>
+                        <tr style="text-align: center;height:50px;">
+                            <td>TT</td>
+                            <td style="width: 80px;">M&Atilde; PHIẾU</td>
+                            <td style="width: 130px;">BIỂN SỐ</td>
+                            <td style="width: 130px;">NGƯỜI GỬI</td>
+                            <td style="width: 130px;">NGƯỜI NHẬN</td>
+                            <td style="width: 80px;">LOẠI H&Agrave;NG</td>
+                            <td style="width: 60px;">CƯỚC ĐTT</td>
+                            <td style="width: 60px;">CƯỚC CTT</td>
+                            <td style="width: 60px;">CƯỚC TTN</td>
+                            <td style="width: 60px;">GIỜ NHẬN</td>
+                            <td style="">K&Iacute; NHẬN</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      @foreach (var item in Model.PhieuChuyenPhats)
+                      {
+                          i++;
+                          var cuocctt = @item.TongTienCuoc - @item.TongCuocDaThanhToan;
+                          var str = "";
+                          if (item.nhatkyvanchuyens.Count() == 1)
+                              str = item.nhatkyvanchuyens.SingleOrDefault().BienSo.ToString();
+                          else
+                              str = string.Format("{0} - {1}", item.nhatkyvanchuyens[0].BienSo, item.nhatkyvanchuyens[1].BienSo);
+                        <tr style="height:32px;">
+                            <td>@i</td>
+                            <td>@item.MaPhieu</td>
+                            <td>
+                                @str
+                            </td>
+                            <td>@item.NguoiGui.HoTen - @item.NguoiGui.SoDienThoai</td>
+                            <td>@item.NguoiNhan.HoTen - @item.NguoiNhan.SoDienThoai</td>
+                            <td>@item.TenHang</td>
+                            <td>@item.TongCuocDaThanhToan.ToString("###,###")</td>
+                            <td>@cuocctt.ToString("###,###")</td>
+                            <td>@item.CuocTanNoi.ToString("###,###")</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                      }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

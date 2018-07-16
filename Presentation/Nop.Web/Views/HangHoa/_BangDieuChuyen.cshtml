@@ -1,0 +1,119 @@
+﻿@model BangDieuChuyenModel
+@using Nop.Web.Models.NhaXes
+@using Nop.Core.Domain.Chonves
+@using Nop.Core.Domain.NhaXes;
+<div style="min-width:4000px;text-align:left">
+    @foreach (var htcd in Model.arrBangDieuChuyen)
+    {
+        <h3>@htcd.hanhtrinhinfo.MoTa</h3>
+        <table border="1" style="border-collapse:collapse;width:auto">
+            <tr>
+                @foreach (var ltitem in htcd.LichTrinhItems)
+                {
+                    <td class="bghanhtrinh">
+                        @ltitem.TenLichTrinh
+                    </td>
+                }
+            </tr>
+            <tr>
+                @foreach (var ltitem in htcd.LichTrinhItems)
+                {
+                    <td style="width:420px;padding:3px;text-align:left;vertical-align:top">
+                        @BangDieuChuyenCell(ltitem)
+                    </td>
+                }
+            </tr>
+        </table>
+        <div style="height:20px;"></div>
+    }
+
+</div>
+<div id="windowthietdatchuyendi"></div>
+<div style="height:120px">&nbsp;</div>
+
+@helper BangDieuChuyenCell(BangDieuChuyenModel.BangDieuChuyenItem item)
+{
+    <div style="width:100%;text-align:left;vertical-align:top;min-height:60px;" id="spChuyenDiCell_@item.Id">
+        <div style="position:relative;left:-2px;top:-2px;width:20px;height:20px;text-align:left"><a href="javascript:ThietDat(@item.Id,0);" title="Thêm chuyến đi" style="color:#47d70a;"><img src="~/Content/chonve/nhaxe/circle_add_new.png" style="width:20px;height:20px;" /> </a></div>
+        @foreach (var cd in item.chuyendis)
+        {
+            <div id="spChuyenDi_@cd.Id" style="width:100%;display:block;margin-bottom:7px;"><a href="javascript:ThietDat(@cd.NguonVeId,@cd.Id)" class="lnkchuyendicss">@(string.Format("{0} / {1} / {2} (Giờ chạy: {3})", cd.DBSoXe, cd.DBLaiXe, cd.DBPhuXe,cd.NgayDi.ToString("HH:mm")))</a>&nbsp;(<a href="javascript:HuyChuyenDi(@cd.Id ,false);" title="Hủy chuyến đi" style="color:red;">x</a>)</div>
+        }
+    </div>
+}
+
+<script>
+
+    $(document).ready(function () {
+
+    });
+
+    function ThietDat(NguonVeId, ChuyenDiId) {
+
+        var windowdieuchuyen = $("#windowthietdatchuyendi");
+        windowdieuchuyen.html($("#divLoadingContent").html());
+        if (windowdieuchuyen.data("kendoWindow"))
+            windowdieuchuyen.data("kendoWindow").destroy();
+        var _ngaydi="@Model.NgayDi.ToString("yyyy-MM-dd")";
+        windowdieuchuyen.kendoWindow({
+            modal: true,
+            width: "650px",
+            height: "400px",
+            title: "Thông tin điều chuyến",
+            content: "@(Url.Action("_ChiTietDieuChuyen", "HangHoa"))" + "?ChuyenDiId=" + ChuyenDiId + "&NguonVeId=" + NguonVeId+"&NgayDi="+_ngaydi,
+            actions: ["Close"]
+        });
+
+        windowdieuchuyen.data('kendoWindow').center().open();
+
+    }
+    function CloseWindowThietDat() {
+        var windowdieuchuyen = $("#windowthietdatchuyendi");
+        windowdieuchuyen.data('kendoWindow').close();
+        LoadChuyenDi();
+    }
+
+    function HuyChuyenDi(Id,isClose) {
+        if (!confirm("Bạn có chắc chắn hủy thiết lập chuyến đi này không ?"))
+            return;
+        $.ajax({
+            cache: false,
+            type: "POST",
+            data: { Id: Id,TrangThaiId:@((int)ENTrangThaiXeXuatBen.HUY) },
+    dataType: 'json',
+    url: "@(Url.Action("CapNhatTrangThaiXeXuatBen", "NhaXes"))",
+    success: function (data) {
+        if (data == "OK") {           
+            if(isClose)
+            {
+                CloseWindowThietDat();
+            }
+            else 
+            {
+                LoadChuyenDi();
+            }
+        }
+        else if(data=="NO")
+        {
+            alert("Không thể hủy chuyến đi này vì có vé hoặc chi phí gán theo xe");
+        }
+        else {
+            alert("Không có xe xuất bến");
+        }
+
+    },
+    });
+
+    }
+</script>
+<style>
+    .lnkchuyendicss {
+        font-weight: bold;
+        color: #3b94d4;
+    }
+
+    .bghanhtrinh {
+        background-color: #f8f4d7;
+        height: 30px;
+    }
+</style>

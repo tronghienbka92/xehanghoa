@@ -1,0 +1,223 @@
+﻿@model IList<BlogPostYearModel>
+@using Nop.Web.Models.Blogs;
+@if (Model.Count > 0)
+{
+    <div class="block block-blog-archive">
+        <div class="title">
+            <strong>@T("Blog.Archive")</strong>
+        </div>
+        <div class="listbox">
+            <ul class="list" id="blog-month-list">
+                @foreach (var yearItem in Model)
+                {
+                    <li class="year"><strong>@(yearItem.Year)</strong>
+                        <ul class="sublist" id="blog-year-@(yearItem.Year)">
+                            @foreach (var monthItem in yearItem.Months)
+                            {
+                                <li class="month"><a href="@Url.RouteUrl("BlogByMonth", new { month = yearItem.Year + "-" + monthItem.Month })">@(new DateTime(yearItem.Year, monthItem.Month, 1).ToString("MMMM"))
+                                    (@(monthItem.BlogPostCount))</a> </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+<table style="height: 145px; width: 860px; font-size: 13px; text-align: left;">
+    <tbody>
+        <tr>
+            <td style="width: 150px; vertical-align: top; text-align: center;"><img src="/Content/chonve/nhaxe/logo_haiau.jpg" alt="" width="90" height="90" /></td>
+            <td style="vertical-align: top;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center; font-size: 23px; font-weight: bold;">PHIẾU VẬN CHUYỂN [VUOT_TUYEN]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-style: italic;">Ng&agrave;y [NGAY] th&aacute;ng [THANG] năm [NAM]&nbsp;[LIEN_NUM]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Số xe:&nbsp;</strong>.....................................&nbsp;</td>
+                                            <td><strong>Giờ chạy:&nbsp;</strong>.................................................</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="vertical-align: top;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;"><strong>Số:</strong>&nbsp;[MA]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>VP:</strong> [MA_VAN_PHONG]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>[KHU_VUC]</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <table style="width: 100%; border-collapse: collapse; text-align: center;" border="1">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <td>TT</td>
+                            <td>NGƯỜI NHẬN</td>
+                            <td style="width: 90px;">T&Ecirc;N H&Agrave;NG</td>
+                            <td style="width: 120px;" colspan="2">
+                                <table style="width: 100%; text-align: center;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border-bottom: 1px solid #000000;" colspan="2">CƯỚC</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 50%; border-right: 1px solid #000000;">ĐTT</td>
+                                            <td>CTT</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td style="width: 60px;">T/N</td>
+                            <td style="width: 120px; display: [DISPLAY_CUNG_TUYEN];">C&Ograve;N LẠI</td>
+                            <td style="width: 120px; display: [DISPLAY_VUOT_TUYEN];" colspan="2">
+                                <table style="width: 100%; text-align: center;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border-bottom: 1px solid #000000;" colspan="2">C&Ograve;N LẠI</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 50%; border-right: 1px solid #000000;">TB-HN</td>
+                                            <td>TB-NĐ</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="repeat">
+                            <td>[STT]</td>
+                            <td>[NGUOINHAN_TEN] - [NGUOINHAN_DIENTHOAI]-[VUNG]</td>
+                            <td>[TEN_HANG]</td>
+                            <td style="width: 60px;">[CUOC_DTT]</td>
+                            <td style="width: 60px;">[CUOC_CTT]</td>
+                            <td>[V_C]</td>
+                            <td style="display: [DISPLAY_CUNG_TUYEN];">[CON_LAI]</td>
+                            <td style="width: 60px; display: [DISPLAY_VUOT_TUYEN];">[CON_LAI_TB_HN]</td>
+                            <td style="width: 60px; display: [DISPLAY_VUOT_TUYEN];">[CON_LAI_TB_ND]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-weight: bold;" colspan="8">Tổng tiền đi k&egrave;m theo phiếu vc: [TONG_TIEN_CUOC]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; height: 95px;" colspan="3">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%; text-align: center; vertical-align: top;"><strong>NGƯỜI GIAO H&Agrave;NG</strong><br />(K&yacute; v&agrave; ghi r&otilde; họ t&ecirc;n)</td>
+                            <td style="text-align: center; vertical-align: top;"><strong>L&Aacute;I, PHỤ XE</strong><br />(K&yacute; v&agrave; ghi r&otilde; họ t&ecirc;n)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr style="display: [DISPLAY_CUNG_TUYEN];">
+            <td colspan="3">
+                <table style="width: 100%; border-collapse: collapse; text-align: center;" border="1">
+                    <thead>
+                        <tr style="text-align: center; font-weight: bold;">
+                            <td style="width: 50px;">VP</td>
+                            <td style="width: 90px;">Thu</td>
+                            <td style="width: 90px;">Trả</td>
+                            <td>H&agrave;ng</td>
+                            <td>K&yacute; nhận</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="height: 35px;">
+                            <td>PT:</td>
+                            <td>[PT_THU]&nbsp;</td>
+                            <td>[PT_TRA]&nbsp;</td>
+                            <td>[PT_TEN_HANG]&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr style="height: 35px;">
+                            <td>HD:</td>
+                            <td>[HD_THU]&nbsp;</td>
+                            <td>&nbsp;[HD_TRA]</td>
+                            <td>&nbsp;[HD_TEN_HANG]</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr style="height: 35px;">
+                            <td>PN:</td>
+                            <td>[PN_THU]&nbsp;</td>
+                            <td>[PN_TRA]&nbsp;</td>
+                            <td>[PN_TEN_HANG]&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr style="display: [DISPLAY_VUOT_TUYEN];">
+            <td colspan="3">
+                <table style="width: 100%; border-collapse: collapse; text-align: center;" border="1">
+                    <thead>
+                        <tr style="text-align: center; font-weight: bold;">
+                            <td style="width: 50px;">VP</td>
+                            <td style="width: 90px;">Thu</td>
+                            <td style="width: 90px;">Trả</td>
+                            <td>H&agrave;ng</td>
+                            <td>K&yacute; nhận</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="height: 35px;">
+                            <td>HN:</td>
+                            <td>[PT_THU]&nbsp;</td>
+                            <td>[PT_TRA]&nbsp;</td>
+                            <td>[PT_TEN_HANG]&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr style="height: 35px;">
+                            <td>HD:</td>
+                            <td>[HD_THU]&nbsp;</td>
+                            <td>&nbsp;[HD_TRA]</td>
+                            <td>&nbsp;[HD_TEN_HANG]</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr style="height: 35px;">
+                            <td>PN:</td>
+                            <td>[PN_THU]&nbsp;</td>
+                            <td>[PN_TRA]&nbsp;</td>
+                            <td>[PN_TEN_HANG]&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; font-style: italic;" colspan="3">*Quy định: NV Chuyển ph&aacute;t - Tổ thu ng&acirc;n - Phụ xe ghi đ&uacute;ng, đủ c&aacute;c mục trong phiếu vận chuyển v&agrave; đối chiếu, b&aacute;o c&aacute;o ph&aacute;t sinh ngay trong ng&agrave;y.</td>
+        </tr>
+    </tbody>
+</table>

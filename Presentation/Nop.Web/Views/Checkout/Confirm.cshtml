@@ -1,0 +1,243 @@
+﻿@model CheckoutConfirmModel
+@using Nop.Web.Models.Checkout;
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Checkout").Text);
+}
+<div class="page checkout-page">
+    @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Confirm })
+    <div class="page-title">
+        <h1>@T("Checkout.ConfirmYourOrder")</h1>
+    </div>
+    <div class="page-body checkout-data">
+        @Html.Widget("checkout_confirm_top")
+        <div class="section confirm-order">
+            @using (Html.BeginRouteForm("CheckoutConfirm", FormMethod.Post, new { id = "confirm-order-form" }))
+            {
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $('.confirm-order-next-step-button').click(function () {
+                            //terms of service
+                            var termOfServiceOk = true;
+                            if ($('#termsofservice').length > 0) {
+                                //terms of service element exists
+                                if (!$('#termsofservice').is(':checked')) {
+                                    $("#terms-of-service-warning-box").dialog();
+                                    termOfServiceOk = false;
+                                } else {
+                                    termOfServiceOk = true;
+                                }
+                            }
+                            if (termOfServiceOk) {
+                                //$('#confirm-order-form').submit();
+                                //$('.confirm-order-next-step-button').attr('disabled', 'disabled');
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                    });
+                </script>
+                if (!String.IsNullOrEmpty(Model.MinOrderTotalWarning))
+                {
+                <span class="min-order-warning">@Model.MinOrderTotalWarning</span>
+                }
+                else
+                {
+                    if (Model.TermsOfServiceOnOrderConfirmPage)
+                    {
+                    <div id="terms-of-service-warning-box" title="@T("Checkout.TermsOfService")" style="display:none;">
+                        <p>@T("Checkout.TermsOfService.PleaseAccept")</p>
+                    </div>
+                    <div class="terms-of-service">
+                        <input id="termsofservice" type="checkbox" name="termsofservice" />
+                        @T("Checkout.TermsOfService.IAccept")
+                        <span class="read" onclick="javascript:OpenWindow('@Url.RouteUrl("TopicPopup", new { SystemName = "conditionsofuse" })', 450, 500, true)">@T("Checkout.TermsOfService.Read")</span>
+                    </div>
+                    }
+                    <div class="buttons">
+                        <input type="submit" name="nextstep" value="@T("Checkout.ConfirmButton")" class="button-1 confirm-order-next-step-button" />
+                    </div>
+                }
+                if (Model.Warnings.Count > 0)
+                {
+                <div class="message-error">
+                    <ul>
+                        @foreach (var warning in Model.Warnings)
+                        {
+                            <li>@warning</li>
+                        }
+                    </ul>
+                </div>
+                }
+            }
+        </div>
+        @Html.Widget("checkout_confirm_bottom")
+        <div class="order-summary-body">
+            @Html.Action("OrderSummary", "ShoppingCart", new { prepareAndDisplayOrderReviewData = true })
+        </div>
+    </div>
+</div>
+
+<table style="height: 145px; width: 840px; font-size: 13px; text-align: left;">
+    <tbody>
+        <tr>
+            <td style="width: 150px; vertical-align: top; text-align: center;"><img src="/Content/chonve/nhaxe/logonew.png" alt="" width="138" height="70" /></td>
+            <td style="vertical-align: top;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center; font-size: 23px; font-weight: bold;">PHIẾU VẬN CHUYỂN [VUOT_TUYEN]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-style: italic;">Ng&agrave;y [NGAY] th&aacute;ng [THANG] năm [NAM]&nbsp;[LIEN_NUM]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Số xe:&nbsp;</strong>.....................................&nbsp;</td>
+                                            <td><strong>Giờ chạy:&nbsp;</strong>.................................................</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="vertical-align: top;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;"><strong>Số:</strong>&nbsp;[MA]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>VP:</strong> [MA_VAN_PHONG]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>[KHU_VUC]</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <table style="width: 100%; font-size: 16px; border-collapse: collapse; text-align: center;" border="1">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <td>TT</td>
+                            <td>NGƯỜI NHẬN</td>
+                            <td style="width: 90px;">T&Ecirc;N H&Agrave;NG</td>
+                            <td style="width: 120px;" colspan="2">
+                                <table style="width: 100%; text-align: center;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border-bottom: 1px solid #000000;" colspan="2">CƯỚC</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 50%; border-right: 1px solid #000000;">ĐTT</td>
+                                            <td>CTT</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td style="width: 60px;">T/N</td>
+                            <td style="width: 120px; display: [DISPLAY_CUNG_TUYEN];">C&Ograve;N LẠI</td>
+                            <td style="width: 120px; display: [DISPLAY_VUOT_TUYEN];" colspan="2">
+                                <table style="width: 100%; text-align: center;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border-bottom: 1px solid #000000;" colspan="2">C&Ograve;N LẠI</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 50%; border-right: 1px solid #000000;">TUYẾN 1</td>
+                                            <td>TUYẾN VƯỢT</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="repeat">
+                            <td>[STT]</td>
+                            <td>[NGUOINHAN_TEN] - [NGUOINHAN_DIENTHOAI]-[VUNG]</td>
+                            <td>[TEN_HANG]</td>
+                            <td style="width: 60px;">[CUOC_DTT]</td>
+                            <td style="width: 60px;">[CUOC_CTT]</td>
+                            <td>[V_C]</td>
+                            <td style="display: [DISPLAY_CUNG_TUYEN];">[CON_LAI]</td>
+                            <td style="width: 60px; display: [DISPLAY_VUOT_TUYEN];">[CON_LAI_VT]</td>
+                            <td style="width: 60px; display: [DISPLAY_VUOT_TUYEN];">[VUOT_TUYEN]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-weight: bold;" colspan="8">Tổng tiền đi k&egrave;m theo phiếu vc: [TONG_TIEN_CUOC]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; height: 95px;" colspan="3">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%; text-align: center; vertical-align: top;"><strong>NGƯỜI GIAO H&Agrave;NG</strong><br />(K&yacute; v&agrave; ghi r&otilde; họ t&ecirc;n)</td>
+                            <td style="text-align: center; vertical-align: top;"><strong>L&Aacute;I, PHỤ XE</strong><br />(K&yacute; v&agrave; ghi r&otilde; họ t&ecirc;n)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr style="display: [DISPLAY_CUNG_TUYEN];">
+            <td colspan="3">
+                <table style="width: 100%; border-collapse: collapse; text-align: center;" border="1">
+                    <thead>
+                        <tr style="text-align: center; font-weight: bold;">
+                            <td style="width: 50px;">VP</td>
+                            <td style="width: 90px;">Thu</td>
+                            <td style="width: 90px;">Trả</td>
+                            <td>H&agrave;ng</td>
+                            <td>K&yacute; nhận</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="height: 35px;">
+                            <td>PT:</td>
+                            <td>[PT_THU]&nbsp;</td>
+                            <td>[PT_TRA]&nbsp;</td>
+                            <td>[PT_TEN_HANG]&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr style="height: 35px;">
+                            <td>HD:</td>
+                            <td>[HD_THU]&nbsp;</td>
+                            <td>&nbsp;[HD_TRA]</td>
+                            <td>&nbsp;[HD_TEN_HANG]</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr style="height: 35px;">
+                            <td>PN:</td>
+                            <td>[PN_THU]&nbsp;</td>
+                            <td>[PN_TRA]&nbsp;</td>
+                            <td>[PN_TEN_HANG]&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; font-style: italic;" colspan="3">*Quy định: NV Chuyển ph&aacute;t - Tổ thu ng&acirc;n - Phụ xe ghi đ&uacute;ng, đủ c&aacute;c mục trong phiếu vận chuyển v&agrave; đối chiếu, b&aacute;o c&aacute;o ph&aacute;t sinh ngay trong ng&agrave;y.</td>
+        </tr>
+    </tbody>
+</table>
+<hr />

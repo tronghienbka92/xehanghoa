@@ -1,0 +1,147 @@
+﻿@using Nop.Web.Models.ChuyenPhatNhanh;
+@model QuanLyLaiXePhuXeSoXeModel
+@{
+    ViewBag.Title = "Thông tin định biên lái, phụ, số xe";
+    Layout = "~/Views/Shared/_NhaXeLayout.cshtml";
+}
+
+<div class="section-header">
+    <div class="title">
+        Quản lý lái xe, phụ xe, số xe
+    </div>
+    <div>
+        <input style="float: right;" class="k-button" type="button" id="btnCapNhat" value="Cập nhật" />
+    </div>
+</div>
+
+<table style="width:100%">
+    <tr>
+        <td align="center" width="15%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Tháng
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.ThangId, Model.ListThang)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center" width="15%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Nam
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.NamId, Model.ListNam)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="text-align:left;width:150px">
+            <input style="float:right;" type="button" id="btnSearch" class="k-button" value="@T("Admin.Common.Search")" />
+        </td>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+
+<table style="width:100%">
+    <tr>
+        <td width="20%">Lái xe</td>
+        <td width="20%">Phụ xe</td>
+        <td width="20%">Số xe</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            <textarea class="LaiPhuSoXe" id="txtLaiXe" rows="40" cols="30"></textarea>
+        </td>
+        <td>
+            <textarea class="LaiPhuSoXe" id="txtPhuXe" rows="40" cols="30"></textarea>
+        </td>
+        <td>
+            <textarea class="LaiPhuSoXe" id="txtSoXe" rows="40" cols="30"></textarea>
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    function LoadLaiXePhuXeSoXe() {
+        var Nam = $("#@Html.FieldIdFor(model=>model.NamId)").val();
+        var Thang = $("#@Html.FieldIdFor(model=>model.ThangId)").val();
+        $.ajax({
+            cache: false,
+            type: "POST",
+            data: { Nam: Nam, Thang: Thang },
+            url: "@(Url.Action("GetLaiPhuSoXe", "HangHoa"))",
+            success: function (data) {
+                var listLaiXe = "";
+                for (var i = 0; i < data.ListLaiXe.length; i++) {
+                    listLaiXe += data.ListLaiXe[i] + "\n";
+                }
+                $("#txtLaiXe").val(listLaiXe);
+
+                var listPhuXe = "";
+                for (var i = 0; i < data.ListPhuXe.length; i++) {
+                    listPhuXe += data.ListPhuXe[i] + "\n";
+                }
+                $("#txtPhuXe").val(listPhuXe);
+
+                var listSoXe = "";
+                for (var i = 0; i < data.ListSoXe.length; i++) {
+                    listSoXe += data.ListSoXe[i] + "\n";
+                }
+                $("#txtSoXe").val(listSoXe);
+
+                if (!data.isEnable) {
+                    $(".LaiPhuSoXe").attr("disabled", "disabled");
+                    $("#btnCapNhat").hide();
+                } else {
+                    $(".LaiPhuSoXe").removeAttr("disabled");
+                    $("#btnCapNhat").show();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });
+    }
+    $(document).ready(function () {
+        LoadLaiXePhuXeSoXe();
+        $("#btnSearch").click(function () {
+            LoadLaiXePhuXeSoXe();
+        });
+        $("#btnCapNhat").click(function () {
+            var Nam = $("#@Html.FieldIdFor(model=>model.NamId)").val();
+            var Thang = $("#@Html.FieldIdFor(model=>model.ThangId)").val();
+            var LaiXe = $("#txtLaiXe").val().trim();
+            var PhuXe = $("#txtPhuXe").val().trim();
+            var SoXe = $("#txtSoXe").val().trim();
+            $.ajax({
+                cache: false,
+                type: "POST",
+                data: { Nam: Nam, Thang: Thang, LaiXe: LaiXe, PhuXe: PhuXe, SoXe: SoXe },
+                url: "@(Url.Action("InsertLaiPhuSoXe", "HangHoa"))",
+                success: function (data) {
+                    if (data == "success") {
+                        alert("Cập nhật thành công");
+                        LoadLaiXePhuXeSoXe();
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                }
+            });
+        });
+        $("#@Html.FieldIdFor(model=>model.NamId)").change(function () {
+            $("#btnSearch").click();
+        });
+        $("#@Html.FieldIdFor(model=>model.ThangId)").change(function () {
+            $("#btnSearch").click();
+        })
+    })
+</script>
+

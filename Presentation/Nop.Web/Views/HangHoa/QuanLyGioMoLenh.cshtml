@@ -1,0 +1,134 @@
+﻿@using Nop.Web.Models.ChuyenPhatNhanh;
+@model DB_GioMoLenhModel
+@{
+    ViewBag.Title = "Định biên giờ mở lệnh";
+    Layout = "~/Views/Shared/_NhaXeLayout.cshtml";
+}
+
+<div class="section-header">
+    <div class="title">
+        Quản lý lái xe, phụ xe, số xe
+    </div>
+    <div>
+        <input style="float: right;" type="button" class="k-button" id="btnCapNhat" value="Cập nhật" />
+    </div>
+</div>
+
+<table style="width:100%">
+    <tr>
+        <td align="center" width="15%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Tháng
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.ThangId, Model.ListThang)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center" width="15%">
+            <table class="adminContent">
+                <tr>
+                    <td class="adminTitle" style="text-align:right">
+                        Nam
+                    </td>
+                    <td class="adminData">
+                        @Html.DropDownListFor(model => model.NamId, Model.ListNam)
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="text-align:left;width:150px;">
+            <input type="button" id="btnSearch" class="k-button" value="@T("Admin.Common.Search")" />
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+<table style="width:100%">
+    <tr id="ListBenXe"></tr>
+    <tr id="ListGioMoLenh"></tr>
+</table>
+
+<script type="text/javascript">
+    function LoadLaiXePhuXeSoXe() {
+        var Nam = $("#NamId").val();
+        var Thang = $("#ThangId").val();
+        $.ajax({
+            cache: false,
+            type: "POST",
+            data: {Nam:Nam,Thang:Thang},
+            url: "@(Url.Action("GetGioMoLenh", "HangHoa"))",
+            success: function (data) {
+                var ListBenXe = "";
+                var ListGioMoLenh = "";
+                for(var i=0;i<data.ListBenXe.length;i++){
+                    ListBenXe += "<td>" + data.ListBenXe[i].TenBenXe + "</td>";
+                    ListGioMoLenh += "<td>";
+                    var GioMoLenh = "";
+                    for(var j=0;j<data.ListBenXe[i].GioMoLenh.length;j++)
+                    {
+                        GioMoLenh += data.ListBenXe[i].GioMoLenh[j] + "\n";
+                    }
+                    ListGioMoLenh += " <textarea class='GioMoLenh' id='" + data.ListBenXe[i].BenXeId + "' rows='40' cols='20'>" + GioMoLenh + "</textarea></td>";
+                }
+                $("#ListBenXe").html(ListBenXe);
+                $("#ListGioMoLenh").html(ListGioMoLenh);
+                if (!data.isEnable) {
+                    $(".GioMoLenh").attr("disabled", "disabled");
+                    $("#btnCapNhat").hide();
+                } else {
+                    $(".GioMoLenh").removeAttr("disabled");
+                    $("#btnCapNhat").show();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });
+    }
+    $(document).ready(function () {
+        LoadLaiXePhuXeSoXe();
+        $("#btnSearch").click(function () {
+            LoadLaiXePhuXeSoXe();
+        });
+        var data=[];
+        $("#btnCapNhat").click(function () {
+            $(".GioMoLenh").each(function () {
+                var BenXeId = $(this).attr("id");
+                var GioMoLenh = $(this).val();
+                data.push(
+                    { BenXeId: BenXeId, Ten: GioMoLenh }
+               );
+            });
+            var str = JSON.stringify(data);
+            var Nam = $("#NamId").val();
+            var Thang = $("#ThangId").val();
+            $.ajax({
+                cache: false,
+                type: "POST",
+                data: {Nam:Nam,Thang:Thang,str:str},
+                url: "@(Url.Action("InsertGioMoLenh", "HangHoa"))",
+                success: function (data) {
+                    if (data == "success") {
+                        alert("Cập nhật thành công");
+                        LoadLaiXePhuXeSoXe();
+                    }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });
+        });
+
+        $("#NamId").change(function () {
+            $("#btnSearch").click();
+        });
+        $("#ThangId").change(function () {
+            $("#btnSearch").click();
+        });
+    })
+</script>
+

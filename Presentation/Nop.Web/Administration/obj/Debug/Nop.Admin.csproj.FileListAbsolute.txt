@@ -1,0 +1,14 @@
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\bin\AutoMapper.Net4.dll
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\bin\Nop.Admin.dll.config
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\bin\Nop.Admin.dll
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\bin\Nop.Admin.pdb
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\Administration\obj\Debug\Nop.Admin.csprojResolveAssemblyReference.cache
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\Administration\obj\Debug\Nop.Admin.dll
+E:\chonve\haiau_new2\HaiAuNew\HaiAu\Presentation\Nop.Web\Administration\obj\Debug\Nop.Admin.pdb
+E:\chonve\xehanghoa\Presentation\Nop.Web\bin\AutoMapper.Net4.dll
+E:\chonve\xehanghoa\Presentation\Nop.Web\bin\Nop.Admin.dll.config
+E:\chonve\xehanghoa\Presentation\Nop.Web\bin\Nop.Admin.dll
+E:\chonve\xehanghoa\Presentation\Nop.Web\bin\Nop.Admin.pdb
+E:\chonve\xehanghoa\Presentation\Nop.Web\Administration\obj\Debug\Nop.Admin.csprojResolveAssemblyReference.cache
+E:\chonve\xehanghoa\Presentation\Nop.Web\Administration\obj\Debug\Nop.Admin.dll
+E:\chonve\xehanghoa\Presentation\Nop.Web\Administration\obj\Debug\Nop.Admin.pdb
